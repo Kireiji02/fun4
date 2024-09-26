@@ -23,7 +23,7 @@ import xacro
     
 def generate_launch_description():
     
-    pkg = get_package_share_directory('example_description')
+    pkg = get_package_share_directory('FUN4')
     rviz_path = os.path.join(pkg,'config','display.rviz')
     rviz = Node(
         package='rviz2',

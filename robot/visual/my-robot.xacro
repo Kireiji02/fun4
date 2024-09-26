@@ -1,87 +1,82 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="example">
-  <link name="link_0">
-    <visual>
-      <geometry>
-        <mesh filename="file:///$(find FUN4)/meshes/link_0.stl"/>
-      </geometry>
-    </visual>
-  </link>
 
-  <link name="link_1">
-    <visual>
-      <geometry>
-        <mesh filename="file:///$(find FUN4)/meshes/link_1.stl"/>
-      </geometry>
-    </visual>
-  </link>
+  <xacro:property name="PI" value="3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803482534211706798214808651328230664709384460955058223172535940812848111745028410270193852110555964462294895493038196442881097566593344612847564823378678316527120190914564856692346034861045432664821339360726024914127372458700660631558817488152092096282925409171536436789259036001133053054882046652138414695194151160943305727036575959195309218611738193261179310511854807446237996274956735188575272489122793818301194912
+"/>
 
-  <joint name="joint_1" type="revolute">
-    <parent link="link_0"/>
-    <child link="link_1"/>
-    <origin xyz="0 0 0.2" rpy="0 0 0"/> 
-    <axis xyz="0 0 1"/>
-    <limit 
-      lower="-3.1459" 
-      upper="3.1459" 
-      velocity="1000.0" 
-      effort="1000.0"/>
-  </joint>
+    <link name="link_0">
+        <visual>
+            <origin rpy="0 0 0" xyz="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://FUN4/meshes/link_0.stl" />
+            </geometry>
+        </visual>
+    </link>
 
-  <link name="link_2">
-    <visual>
-      <origin xyz="0.0 0.0 0.0" rpy="0 0 ${-3.14/2}"/> 
-      <geometry>
-        <mesh filename="file:///$(find FUN4)/meshes/link_2.stl"/>
-      </geometry>
-    </visual>
-  </link>
-  
-  <joint name="joint_2" type="revolute">
-    <parent link="link_1"/>
-    <child link="link_2"/>
-    <origin xyz="0.0 -0.12 0.0" rpy="${-3.14/2} 0 0"/> 
-    <axis xyz="0 0 1"/>
-    <limit 
-      lower="-3.1459" 
-      upper="3.1459" 
-      velocity="1000.0" 
-      effort="1000.0"/>
-  </joint>
+    <link name="link_1">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0.2" />
+            <geometry>
+                <mesh filename="package://FUN4/meshes/link_1.stl" />
+            </geometry>
+        </visual>
+    </link>
 
-  <link name="link_3">
-    <visual>
-      <origin xyz="0.0 0.0 0.0" rpy="0 0 ${-3.14/2}"/> 
-      <geometry>
-        <mesh filename="file:///$(find FUN4)/meshes/link_3.stl"/>
-      </geometry>
-    </visual>
-  </link>
-  
-  <joint name="joint_3" type="revolute">
-    <parent link="link_2"/>
-    <child link="link_3"/>
-    <origin xyz="0.0 -0.25 0.1" rpy="0 0 0"/> 
-    <axis xyz="0 0 1"/>
-    <limit 
-      lower="-3.1459" 
-      upper="3.1459" 
-      velocity="1000.0" 
-      effort="1000.0"/>
-  </joint>
+    <joint name="link_0_to_link_1" type="revolute">
+        <parent link="link_0" />
+        <child link="link_1" />
+        <limit effort="1000.0" lower="0.0" upper="${2*PI}" velocity="0.5" />
+        <axis xyz="0 0 1" />
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
 
-  <link name="end_effector">
-    <visual>
-      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/> 
-      <geometry>
-        <mesh filename="file:///$(find FUN4)/meshes/end_effector.stl"/>
-      </geometry>
-    </visual>
-  </link>
-  
-  <joint name="joint_end_effector" type="fixed">
-    <parent link="link_3"/>
-    <child link="end_effector"/>
-    <origin xyz="0.0 -0.28 0.0" rpy="${3.14/2} 0 0"/> 
-  </joint>
+    <link name="link_2">
+        <visual>
+            <origin rpy="${PI} 0 0" xyz="0 0 0" />
+            <geometry>
+                <mesh filename="package://FUN4/meshes/link_2.stl" />
+            </geometry>
+        </visual>
+    </link>
+
+    <joint name="link_1_to_link_2" type="revolute">
+        <parent link="link_1" />
+        <child link="link_2" />
+        <limit effort="1000.0" lower="${PI/2}" upper="${3*PI/2}" velocity="0.5" />
+        <axis xyz="0 0 1" />
+        <origin xyz="0 -0.12 0.2" rpy="${PI/2} ${PI/2} 0" />
+    </joint>
+
+    <link name="link_3">
+        <visual>
+            <origin rpy="0 0 0" xyz="0.0 0 0" />
+            <geometry>
+                <mesh filename="package://FUN4/meshes/link_3.stl" />
+            </geometry>
+        </visual>
+    </link>
+
+    <joint name="link_2_to_link_3" type="revolute">
+        <parent link="link_2" />
+        <child link="link_3" />
+        <limit effort="1000.0" lower="-${PI}" upper="${PI}" velocity="0.5" />
+        <axis xyz="0 0 1" />
+        <origin xyz="0.25 0 -0.1" rpy="${PI} 0 0" />
+    </joint>
+
+    <link name="end_effector">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <mesh filename="package://FUN4/meshes/end_effector.stl" />
+            </geometry>
+        </visual>
+    </link>
+
+    <joint name="link_3_to_end_effector" type="fixed">
+        <parent link="link_3" />
+        <child link="end_effector" />
+        <origin xyz="0.28 0 0" rpy="0  ${PI/2} 0" /> 
+    </joint>
+
 </robot>

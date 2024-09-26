@@ -44,9 +44,7 @@ class DummyNode(Node):
         
         if (self.r_min**2 < (self.rand[0]**2 + self.rand[1]**2 + self.rand[2]**2) < self.r_max**2):
             self.random(self.rand[0], self.rand[1], self.rand[2] + self.z_offset)
-            self.get_logger().info(f'{[self.rand[0], self.rand[1], self.rand[2]]}')
-        else:
-            self.get_logger().info('out of bounds')
+            # self.get_logger().info(f'{[self.rand[0], self.rand[1], self.rand[2]]}')
 
         
     def random(self, x, y, z):
