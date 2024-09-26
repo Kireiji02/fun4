@@ -1,4 +1,4 @@
-std_msgs/Bool auto_mode
+std_msgs/Int64 mode
 geometry_msgs/Pose ipk_target
 ---
 std_msgs/Bool state

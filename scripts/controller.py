@@ -3,6 +3,7 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Int64 
+from fun4.srv import ModeSelector
 from sensor_msgs.msg import JointState
 
 
@@ -12,7 +13,7 @@ class ControllerNode(Node):
         
         #----------------------------Variables----------------------------#
         
-        self.mode = 'None'
+        self.mode = 0
         
         #----------------------------Timer----------------------------#
         
@@ -31,16 +32,34 @@ class ControllerNode(Node):
         
         #----------------------------Service_Clients----------------------------#
         
+        self.mode_selection_client = self.create_client(ModeSelector, '/mode_select')
+        
     def timer_callback(self):
-        self.get_logger().info(f'{self.mode}')
+        self.get_logger().info(f'{self.mode}') # Mode selector Debug
     
+    def mode_call(self, x, y, z, m):
+        while not self.mode_selection_client.wait_for_service(1.0):
+            self.get_logger().warn('Waiting for Server...')
+        mode_request = ModeSelector.Request()
+        mode_request.ipk_target.position.x = x
+        mode_request.ipk_target.position.y = y
+        mode_request.ipk_target.position.z = z
+        mode_request.mode.data = m
+        
+        self.future = self.mode_selection_client.call_async(mode_request)
+        self.future.add_done_callback(self.response_callback)
+    
+    def response_callback(self, future):
+        try:
+            response = future.result()
+            self.get_logger().info(f'Result: {response.state}')
+            # self.get_logger().info(f'Result: {response.state}')
+        except Exception as e:
+            self.get_logger().error(f'Service call failed: {e}')
+            
+            
     def callback_keyboard_teleop(self, msg):
-        if (msg.data == 1):
-            self.mode = 'IPK'
-        elif (msg.data == 2):
-            self.mode = 'Teleop'
-        elif (msg.data == 3):
-            self.mode = 'Auto'
+        self.mode = msg.data
 
 def main(args=None):
     rclpy.init(args=args)

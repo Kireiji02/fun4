@@ -51,7 +51,7 @@ class TeleopNode(Node):
 
                           
                           
-                    1   2   3
+                       1   2   3
 
     1: Inverse Pose Kinematics
     2: Teleoperation
@@ -60,11 +60,12 @@ class TeleopNode(Node):
             """
         )
     
-        print(f'        Current Mode : [ {KEY_BINDINGS[key]} ]')
+        print(f'          Current Mode : [ {KEY_BINDINGS[key]} ]')
         print(
             """
 
-
+        >> Exit upon pressing any other keys <<
+        
 
     ------------------------------------------------
 
