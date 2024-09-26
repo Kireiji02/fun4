@@ -1,0 +1,5 @@
+std_msgs/Bool auto_mode
+geometry_msgs/Pose ipk_target
+---
+std_msgs/Bool state
+sensor_msgs/JointState joint_position
