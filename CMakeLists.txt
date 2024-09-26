@@ -30,6 +30,7 @@ install(PROGRAMS
   scripts/dummy_script.py
   scripts/jointstate_script.py
   scripts/randomizer.py
+  scripts/pose_analyzer.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

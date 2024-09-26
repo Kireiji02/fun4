@@ -1,15 +1,14 @@
 #!/usr/bin/python3
 
-from FUN4.dummy_module import dummy_function, dummy_var
 import rclpy
 import numpy as np
 from rclpy.node import Node
 from geometry_msgs.msg import PoseStamped
 
 
-class DummyNode(Node):
+class RandomizerNode(Node):
     def __init__(self):
-        super().__init__('dummy_node')
+        super().__init__('randomizer_node')
         
         #----------------------------Variables----------------------------#
         
@@ -56,7 +55,7 @@ class DummyNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = DummyNode()
+    node = RandomizerNode()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
