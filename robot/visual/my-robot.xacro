@@ -8,7 +8,7 @@
         <visual>
             <origin rpy="0 0 0" xyz="0.0 0.0 0.0" />
             <geometry>
-                <mesh filename="package://FUN4/meshes/link_0.stl" />
+                <mesh filename="file:///$(find fun4)/meshes/link_0.stl"/>
             </geometry>
         </visual>
     </link>
@@ -17,12 +17,12 @@
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0.2" />
             <geometry>
-                <mesh filename="package://FUN4/meshes/link_1.stl" />
+                <mesh filename="file:///$(find fun4)/meshes/link_1.stl"/>
             </geometry>
         </visual>
     </link>
 
-    <joint name="link_0_to_link_1" type="revolute">
+    <joint name="joint_1" type="revolute">
         <parent link="link_0" />
         <child link="link_1" />
         <limit effort="1000.0" lower="0.0" upper="${2*PI}" velocity="0.5" />
@@ -34,12 +34,12 @@
         <visual>
             <origin rpy="${PI} 0 0" xyz="0 0 0" />
             <geometry>
-                <mesh filename="package://FUN4/meshes/link_2.stl" />
+                <mesh filename="file:///$(find fun4)/meshes/link_2.stl"/>
             </geometry>
         </visual>
     </link>
 
-    <joint name="link_1_to_link_2" type="revolute">
+    <joint name="joint_2" type="revolute">
         <parent link="link_1" />
         <child link="link_2" />
         <limit effort="1000.0" lower="${PI/2}" upper="${3*PI/2}" velocity="0.5" />
@@ -51,12 +51,12 @@
         <visual>
             <origin rpy="0 0 0" xyz="0.0 0 0" />
             <geometry>
-                <mesh filename="package://FUN4/meshes/link_3.stl" />
+                <mesh filename="file:///$(find fun4)/meshes/link_3.stl"/>
             </geometry>
         </visual>
     </link>
 
-    <joint name="link_2_to_link_3" type="revolute">
+    <joint name="joint_3" type="revolute">
         <parent link="link_2" />
         <child link="link_3" />
         <limit effort="1000.0" lower="-${PI}" upper="${PI}" velocity="0.5" />
@@ -68,7 +68,7 @@
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0" />
             <geometry>
-                <mesh filename="package://FUN4/meshes/end_effector.stl" />
+                <mesh filename="file:///$(find fun4)/meshes/end_effector.stl"/>
             </geometry>
         </visual>
     </link>

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(FUN4)
+project(fun4)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -31,6 +31,7 @@ install(PROGRAMS
   scripts/jointstate_script.py
   scripts/randomizer.py
   scripts/pose_analyzer.py
+  scripts/controller.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -1,4 +1,4 @@
-#include "FUN4/cpp_header.hpp"
+#include "fun4/cpp_header.hpp"
 
 #include <iostream>
 
