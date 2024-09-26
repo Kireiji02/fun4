@@ -2,4 +2,5 @@ std_msgs/Int64 mode
 geometry_msgs/Pose ipk_target
 ---
 std_msgs/Bool state
+std_msgs/Int64 mode
 sensor_msgs/JointState joint_position

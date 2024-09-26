@@ -5,7 +5,8 @@ import tty
 import rclpy
 import termios
 from rclpy.node import Node
-from std_msgs.msg import Int64 
+from std_msgs.msg import Int64
+from example_interfaces.srv import Trigger
 
 # Key bindings
 KEY_BINDINGS = {
@@ -29,10 +30,35 @@ class TeleopNode(Node):
         
         self.settings = termios.tcgetattr(sys.stdin)
         
-        self.frequency = 100.0
-        self.create_timer(1/self.frequency, self.timer_callback)
+        #----------------------------Variables----------------------------#
+        
+        self.latest = 0
+
+        #----------------------------Timer----------------------------#
+        
+        self.declare_parameter('frequency', 100.0)   
+        self.frequency = self.get_parameter('frequency').get_parameter_value().double_value
+        
+        self.create_timer(1/self.frequency, self.timer_callback)   
+        
+        #----------------------------Topic_Publishers----------------------------#
         
         self.send_flag_req_pub = self.create_publisher(Int64,'/flag_req',10)
+        
+        #----------------------------Topic_Subscribers----------------------------#
+        
+        #----------------------------Service_Servers----------------------------#
+        
+        self.mode_init_client = self.create_client(Trigger, '/call')
+        
+        #----------------------------Service_Clients----------------------------#
+       
+    def mode_init(self):
+        while not self.mode_init_client.wait_for_service(1.0):
+            self.get_logger().warn('Waiting for Server...')
+        mode_init_request = Trigger.Request()
+        
+        self.mode_init_client.call_async(mode_init_request)
         
     def send_flag(self,flag):
         msg = Int64()
@@ -42,7 +68,7 @@ class TeleopNode(Node):
     def timer_callback(self):
         
         key = get_key(self.settings)
-        
+
         print(
             """
             
@@ -57,10 +83,19 @@ class TeleopNode(Node):
     2: Teleoperation
     3: Automatic
     
+    c: Mode Confirm
+    
             """
         )
-    
-        print(f'          Current Mode : [ {KEY_BINDINGS[key]} ]')
+        if key in KEY_BINDINGS:
+            self.send_flag(KEY_BINDINGS[key])
+            self.latest = KEY_BINDINGS[key]
+            print(f'          Selecting Mode : [ {KEY_BINDINGS[key]} ]')
+        elif key == 'c' or key == 'C': 
+            self.mode_init()
+            print(f'          Mode Change Applied : [ {self.latest} ]')
+        elif key == "\x03" :
+            rclpy.shutdown()
         print(
             """
 
@@ -71,12 +106,6 @@ class TeleopNode(Node):
 
         """
         )
-        
-        if key in KEY_BINDINGS:
-            self.send_flag(KEY_BINDINGS[key])
-                
-        elif key == "\x03" :
-            rclpy.shutdown()
         
 
 def main(args=None):

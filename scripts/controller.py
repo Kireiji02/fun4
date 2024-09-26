@@ -2,9 +2,10 @@
 
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Int64 
+from std_msgs.msg import Int64
 from fun4.srv import ModeSelector
 from sensor_msgs.msg import JointState
+from example_interfaces.srv import Trigger
 
 
 class ControllerNode(Node):
@@ -30,12 +31,20 @@ class ControllerNode(Node):
 
         #----------------------------Service_Servers----------------------------#
         
+        self.create_service(Trigger, '/call', self.callback_mode_init)
+        
         #----------------------------Service_Clients----------------------------#
         
         self.mode_selection_client = self.create_client(ModeSelector, '/mode_select')
         
     def timer_callback(self):
-        self.get_logger().info(f'{self.mode}') # Mode selector Debug
+        # self.get_logger().info(f'{self.mode}') # Mode selector Debug
+        pass
+    
+    def callback_mode_init(self, request:ModeSelector.Request , response:ModeSelector.Response):
+        # self.get_logger().info('test') # service debug
+        self.mode_call(0.3, 0.3, 0.3, self.mode)
+        return response
     
     def mode_call(self, x, y, z, m):
         while not self.mode_selection_client.wait_for_service(1.0):
@@ -53,7 +62,7 @@ class ControllerNode(Node):
         try:
             response = future.result()
             self.get_logger().info(f'Result: {response.state}')
-            # self.get_logger().info(f'Result: {response.state}')
+            self.get_logger().info(f'Result: {response.joint_position}')
         except Exception as e:
             self.get_logger().error(f'Service call failed: {e}')
             
