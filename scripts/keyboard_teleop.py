@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
-import rclpy
 import sys
 import tty
+import rclpy
 import termios
 from rclpy.node import Node
 from std_msgs.msg import Int64 
@@ -40,7 +40,37 @@ class TeleopNode(Node):
         self.send_flag_req_pub.publish(msg)
         
     def timer_callback(self):
+        
         key = get_key(self.settings)
+        
+        print(
+            """
+            
+            
+    ---------------- Mode Selection ---------------- 
+
+                          
+                          
+                    1   2   3
+
+    1: Inverse Pose Kinematics
+    2: Teleoperation
+    3: Automatic
+    
+            """
+        )
+    
+        print(f'        Current Mode : [ {KEY_BINDINGS[key]} ]')
+        print(
+            """
+
+
+
+    ------------------------------------------------
+
+        """
+        )
+        
         if key in KEY_BINDINGS:
             self.send_flag(KEY_BINDINGS[key])
                 
