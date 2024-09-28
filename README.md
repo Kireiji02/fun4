@@ -20,10 +20,7 @@ This project demonstrates how to control a robot's end-effector in Cartesian spa
 Ensure you have the following installed:
 
 - **ROS 2 Humble** (or a compatible version)
-- `teleop_twist_keyboard` package:
-    ```bash
-    sudo apt install ros-humble-teleop-twist-keyboard
-    ```
+[https://docs.ros.org/en/humble/Installation.html](https://docs.ros.org/en/humble/Installation.html)
 
 - install these following packages:
     ```bash
@@ -32,9 +29,28 @@ Ensure you have the following installed:
 
 - make sure numpy version is compatible
     ```bash
-    pip3 install numpy==1.23.3
+    pip show numpy
+    pip install numpy==1.23.3
     ```
-    
+
+- ROS2 programs
+    ```bash
+    sudo apt install ros-humble-desktop-full
+    ```
+
+### Workspace
+
+- prepare your workspace as empty folder
+    ```bash
+    cd
+    mkdir workspace
+    cd /workspace
+    mkdir src
+    ```
+
+
+
+
 git clone https://github.com/your-username/robot-control-cartesian.git
 cd robot-control-cartesian
 
