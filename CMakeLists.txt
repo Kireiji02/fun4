@@ -66,6 +66,7 @@ install(DIRECTORY
 # Generate ROSIDL interfaces
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/ModeSelector.srv"
+  "srv/ValueArray.srv"
   DEPENDENCIES std_msgs geometry_msgs sensor_msgs
 )
 

@@ -3,7 +3,7 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Int64
-from fun4.srv import ModeSelector
+from fun4.srv import ModeSelector, ValueArray
 from sensor_msgs.msg import JointState
 from example_interfaces.srv import Trigger
 
@@ -15,6 +15,7 @@ class ControllerNode(Node):
         #----------------------------Variables----------------------------#
         
         self.mode = 0
+        self.value = [0.0, 0.0, 0.0]
         
         #----------------------------Timer----------------------------#
         
@@ -32,6 +33,7 @@ class ControllerNode(Node):
         #----------------------------Service_Servers----------------------------#
         
         self.create_service(Trigger, '/call', self.callback_mode_init)
+        self.create_service(ValueArray, '/value', self.callback_value)
         
         #----------------------------Service_Clients----------------------------#
         
@@ -41,9 +43,18 @@ class ControllerNode(Node):
         # self.get_logger().info(f'{self.mode}') # Mode selector Debug
         pass
     
+    def callback_value(self, request:ValueArray.Request , response:ValueArray.Response):
+        self.value[0] = request.x.data
+        self.value[1] = request.y.data
+        self.value[2] = request.z.data
+        self.get_logger().info(f'{self.value}')
+        return response
+    
     def callback_mode_init(self, request:ModeSelector.Request , response:ModeSelector.Response):
         # self.get_logger().info('test') # service debug
-        self.mode_call(-0.3, 0.2, -0.1, self.mode)
+        self.mode_call(float(self.value[0]),float(self.value[1]),float(self.value[2]), self.mode)
+        self.get_logger().info('test-------------------------')
+        self.get_logger().info(f'{self.value}')
         return response
     
     def mode_call(self, x, y, z, m):

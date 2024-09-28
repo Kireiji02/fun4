@@ -2,10 +2,12 @@
 
 import sys
 import tty
+import time
 import rclpy
 import termios
 from rclpy.node import Node
-from std_msgs.msg import Int64
+from fun4.srv import ValueArray
+from std_msgs.msg import Int64, Float64
 from example_interfaces.srv import Trigger
 
 # Key bindings
@@ -53,9 +55,10 @@ class TeleopNode(Node):
         
         #----------------------------Service_Servers----------------------------#
         
-        self.mode_init_client = self.create_client(Trigger, '/call')
-        
         #----------------------------Service_Clients----------------------------#
+        
+        self.mode_init_client = self.create_client(Trigger, '/call')
+        self.value_client = self.create_client(ValueArray, '/value')
        
     def mode_init(self):
         while not self.mode_init_client.wait_for_service(1.0):
@@ -63,6 +66,21 @@ class TeleopNode(Node):
         mode_init_request = Trigger.Request()
         
         self.mode_init_client.call_async(mode_init_request)
+        
+    def value(self, x ,y ,z):
+        while not self.mode_init_client.wait_for_service(1.0):
+            self.get_logger().warn('Waiting for Server...')
+        value_request = ValueArray.Request()
+        
+        value_request.x = Float64()
+        value_request.y = Float64()
+        value_request.z = Float64()
+        
+        value_request.x.data = float(x)
+        value_request.y.data = float(y)
+        value_request.z.data = float(z)
+        
+        self.value_client.call_async(value_request)
         
     def send_flag(self,flag):
         msg = Int64()
@@ -93,6 +111,9 @@ class TeleopNode(Node):
             self.latest = KEY_BINDINGS[key]
             print(f'          Selecting Mode : [ {KEY_BINDINGS[key]} ]')
         elif key == 'c' or key == 'C': 
+            if self.latest == 1:
+                self.value(self.value_array[0], self.value_array[1], self.value_array[2])
+                time.sleep(0.1)
             self.mode_init()
             print(f'          Mode Change Applied : [ {self.latest} ]')
         elif key == "\x03" :
