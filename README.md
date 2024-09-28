@@ -44,14 +44,16 @@ Ensure you have the following installed:
     ```bash
     cd
     mkdir workspace
-    cd /workspace
+    cd workspace/
     mkdir src
     ```
 
+- go to src and clone this github repository as ros2 package
+    ```bash
+    cd
+    cd workspace/src/
+    git clone https://github.com/Kireiji02/fun4
+    ```
 
-
-
-git clone https://github.com/your-username/robot-control-cartesian.git
-cd robot-control-cartesian
 
 
