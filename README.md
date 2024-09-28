@@ -88,7 +88,7 @@ Ensure you have the following installed:
 ## Features
 
 ### Every Mode can be controlled by this node
-![keyboard_teleop](fun4/images/keyboard_teleop.png)
+![keyboard_teleop](/fun4/images/keyboard_teleop.png)
 keyboard_teleop.py - to start navigate to node's terminal and press any number keys
 
 ### Mode1: Inverse Position Kinematics (IPK)
@@ -126,6 +126,6 @@ Here’s a simplified breakdown of the process:
 4. The joint velocities (q_dot) are applied to the robot, causing the joints to move in a way that moves the end-effector in Cartesian space.
 Key Formula:
 
-        𝑞_𝑑𝑜𝑡=𝐽⁺⋅𝑣
+𝑞_𝑑𝑜𝑡=𝐽⁺⋅𝑣
 
 Where J⁺ is the pseudo-inverse of the Jacobian and v is the desired Cartesian velocity.
