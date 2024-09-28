@@ -8,10 +8,7 @@ This project demonstrates how to control a robot's end-effector in Cartesian spa
 - [Usage](#usage)
 - [Features](#features)
 - [Inverse Kinematics Explanation](#inverse-kinematics-explanation)
-- [Files](#files)
 - [Known Issues](#known-issues)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Installation
 
@@ -84,12 +81,16 @@ Ensure you have the following installed:
     ```bash
     ros2 run teleop_twist_keyboard teleop_twist_keyboard 
     ```
+![launch1](images/launch1.png)
     
 ## Features
 
 ### Every Mode can be controlled by this node
 ![keyboard_teleop](images/keyboard_teleop.png)
+
 keyboard_teleop.py - to start navigate to node's terminal and press any number keys
+
+![launch2](images/launch2.png)
 
 ### Mode1: Inverse Position Kinematics (IPK)
 by pressing '1' key on your keyboard Mode1 will be selected but not yet confirmed
@@ -126,6 +127,10 @@ Here’s a simplified breakdown of the process:
 4. The joint velocities (q_dot) are applied to the robot, causing the joints to move in a way that moves the end-effector in Cartesian space.
 Key Formula:
 
-𝑞_𝑑𝑜𝑡=𝐽⁺⋅𝑣
+###         q_dot = J⁺ ⋅ 𝑣
 
 Where J⁺ is the pseudo-inverse of the Jacobian and v is the desired Cartesian velocity.
+
+## Known Issues
+Singularity Handling: The robot may exhibit erratic behavior near singular configurations. Adjusting the damping factor in the pseudo-inverse calculation helps alleviate this.
+Limited Cartesian Movements: Ensure that the robot's workspace is respected. Cartesian movements may not be achievable in all joint configurations.
