@@ -32,7 +32,7 @@ def generate_launch_description():
         arguments=['-d', rviz_path],
         output='screen')
     
-    path_description = os.path.join(pkg,'robot','visual','your-robot.xacro')
+    path_description = os.path.join(pkg,'robot','visual','BTbot.xacro')
     robot_desc_xml = xacro.process_file(path_description).toxml()
     #robot_desc_xml = xacro.process_file(path_description,mappings={'robot_name': namespace}).toxml()
     
@@ -49,14 +49,25 @@ def generate_launch_description():
         executable='joint_state_publisher_gui'
     )
 
-    # random_node = Node(
-    #     package='random_target',
-    #     executable='random.py'
-    # )
     launch_description = LaunchDescription()
     
     launch_description.add_action(rviz)
     launch_description.add_action(robot_state_publisher)
-    # launch_description.add_action(joint_state_publisher_gui)
+    launch_description.add_action(joint_state_publisher_gui)
+    
+    package_name = 'fun4'
+    
+    executable_name = ['controller', 'pose_analyzer', 'randomizer']
+    for i in range(len(executable_name)):
+        node = Node(
+        package = package_name,
+        namespace = '',
+        executable = executable_name[i] + '.py',
+        name = executable_name[i],
+        parameters=[
+        { 'frequency': 100.0 }
+        ]
+        )
+        launch_description.add_action(node)
     
     return launch_description

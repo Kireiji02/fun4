@@ -4,7 +4,7 @@
         <visual>
             <origin rpy="0 0 0" xyz="0.0 0.0 0.0" />
             <geometry>
-                <mesh filename="package://example_description/meshes/link_0.stl" />
+                <mesh filename="file:///$(find fun4)/meshes/link_0.stl" />
             </geometry>
         </visual>
     </link>
@@ -13,7 +13,7 @@
         <visual>
             <origin rpy="0 0 0" xyz="0.0 0.0 0.0" />
             <geometry>
-                <mesh filename="package://example_description/meshes/link_1.stl" />
+                <mesh filename="file:///$(find fun4)/meshes/link_1.stl" />
             </geometry>
         </visual>
     </link>
@@ -31,7 +31,7 @@
         <visual>
             <origin rpy="3.14 0 0" xyz="0.0 0.0 0.0" />
             <geometry>
-                <mesh filename="package://example_description/meshes/link_2.stl" />
+                <mesh filename="file:///$(find fun4)/meshes/link_2.stl" />
             </geometry>
         </visual>
     </link>
@@ -49,7 +49,7 @@
         <visual>
             <origin rpy="3.14 0 0" xyz="0.0 0.0 0.0" />
             <geometry>
-                <mesh filename="package://example_description/meshes/link_3.stl" />
+                <mesh filename="file:///$(find fun4)/meshes/link_3.stl" />
             </geometry>
         </visual>
     </link>
@@ -67,7 +67,7 @@
         <visual>
             <origin rpy="0 1.57 0" xyz="0.0 0.0 0.0" />
             <geometry>
-                <mesh filename="package://example_description/meshes/end_effector.stl" />
+                <mesh filename="file:///$(find fun4)/meshes/end_effector.stl" />
             </geometry>
         </visual>
     </link>

@@ -43,7 +43,7 @@ class ControllerNode(Node):
     
     def callback_mode_init(self, request:ModeSelector.Request , response:ModeSelector.Response):
         # self.get_logger().info('test') # service debug
-        self.mode_call(0.0, 0.0, 0.0, self.mode)
+        self.mode_call(-0.3, 0.2, -0.1, self.mode)
         return response
     
     def mode_call(self, x, y, z, m):
