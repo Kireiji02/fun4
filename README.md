@@ -88,7 +88,7 @@ Ensure you have the following installed:
 ## Features
 
 ### Every Mode can be controlled by this node
-![keyboard_teleop](src/fun4/images/keyboard_teleop.png)
+![keyboard_teleop](images/keyboard_teleop.png)
 keyboard_teleop.py - to start navigate to node's terminal and press any number keys
 
 ### Mode1: Inverse Position Kinematics (IPK)
