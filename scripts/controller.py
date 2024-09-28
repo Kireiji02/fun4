@@ -48,13 +48,16 @@ class ControllerNode(Node):
         self.value[1] = request.y.data
         self.value[2] = request.z.data
         self.get_logger().info(f'{self.value}')
+        if 0.02**2 > (self.value[0]**2)+(self.value[1]**2)+(self.value[2]**2) > 0.52**2:
+            response.confirm.data = True
+        else:
+            response.confirm.data = False
         return response
     
     def callback_mode_init(self, request:ModeSelector.Request , response:ModeSelector.Response):
         # self.get_logger().info('test') # service debug
         self.mode_call(float(self.value[0]),float(self.value[1]),float(self.value[2]), self.mode)
-        self.get_logger().info('test-------------------------')
-        self.get_logger().info(f'{self.value}')
+        # self.get_logger().info(f'{self.value}')
         return response
     
     def mode_call(self, x, y, z, m):

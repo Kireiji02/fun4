@@ -39,6 +39,7 @@ class TeleopNode(Node):
         self.mode1_value = ['','','']
         self.trig = 'neutral'
         self.value_array = [0.0,0.0,0.0]
+        self.confirm = False
 
         #----------------------------Timer----------------------------#
         
@@ -80,7 +81,17 @@ class TeleopNode(Node):
         value_request.y.data = float(y)
         value_request.z.data = float(z)
         
-        self.value_client.call_async(value_request)
+        
+        self.future = self.value_client.call_async(value_request)
+        self.future.add_done_callback(self.value_callback)
+        
+    def value_callback(self, future):
+        try:
+            response = future.result()
+            self.confirm = response.confirm.data
+            # self.get_logger().info(f'Result: {response.confirm.data}')
+        except Exception as e:
+            self.get_logger().error(f'Service call failed: {e}')
         
     def send_flag(self,flag):
         msg = Int64()
@@ -88,11 +99,11 @@ class TeleopNode(Node):
         self.send_flag_req_pub.publish(msg)
         
     def timer_callback(self):
-        
+    
         key = get_key(self.settings)
 
         print(
-            """
+            """\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
             
             
     ---------------- Mode Selection ---------------- 
@@ -112,8 +123,17 @@ class TeleopNode(Node):
             print(f'          Selecting Mode : [ {KEY_BINDINGS[key]} ]')
         elif key == 'c' or key == 'C': 
             if self.latest == 1:
-                self.value(self.value_array[0], self.value_array[1], self.value_array[2])
-                time.sleep(0.1)
+                if 0.03**2 < (self.value_array[0]**2)+(self.value_array[1]**2)+(self.value_array[2]**2) < 0.53**2:
+                    self.value(self.value_array[0], self.value_array[1], self.value_array[2])
+                    self.trig = 'neutral'
+                    self.mode1_value = ['','','']
+                    self.value_array = [0.0,0.0,0.0]
+                    time.sleep(0.1)
+                else:
+                    print(f'          Target is outside workspace')
+                    self.trig = 'neutral'
+                    self.mode1_value = ['','','']
+                    self.value_array = [0.0,0.0,0.0]
             self.mode_init()
             print(f'          Mode Change Applied : [ {self.latest} ]')
         elif key == "\x03" :
@@ -254,7 +274,7 @@ class TeleopNode(Node):
     c: Mode Confirmation
     ------------------------------------------------"""
         )
-        print(f'{key}',self.trig,self.latest,self.mode1_value,self.value_array)
+        print(f'   {key}',self.trig,self.latest,self.mode1_value,self.value_array)
         
         
 

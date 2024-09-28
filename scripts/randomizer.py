@@ -15,6 +15,7 @@ class RandomizerNode(Node):
         self.r_max = 0.53
         self.r_min = 0.03
         self.z_offset = 0.2
+        self.tolerence = 0.01
         self.rand = [0.0,0.0,0.0]
         
         #----------------------------Timer----------------------------#
@@ -41,7 +42,7 @@ class RandomizerNode(Node):
         self.rand[1] = ry if ry < -self.r_min or ry > self.r_min else np.random.uniform(-self.r_max,self.r_max)
         self.rand[2] = rz if rz < -self.r_min or rz > self.r_min else np.random.uniform(-self.r_max,self.r_max)
         
-        if (self.r_min**2 < (self.rand[0]**2 + self.rand[1]**2 + self.rand[2]**2) < self.r_max**2):
+        if ((self.r_min+self.tolerence)**2 < (self.rand[0]**2 + self.rand[1]**2 + self.rand[2]**2) < (self.r_max-self.tolerence)**2):
             self.random(self.rand[0], self.rand[1], self.rand[2] + self.z_offset)
             # self.get_logger().info(f'{[self.rand[0], self.rand[1], self.rand[2]]}')
 
