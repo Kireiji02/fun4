@@ -55,5 +55,13 @@ Ensure you have the following installed:
     git clone https://github.com/Kireiji02/fun4
     ```
 
+- build the project
+    ```bash
+    cd
+    cd workspace/
+    colcon build
+    source install/setup.bash
+    ```
 
+## Usage
 
