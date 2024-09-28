@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import rclpy
-import time
 import numpy as np
 from math import pi
 from spatialmath import SE3
@@ -9,8 +8,8 @@ from rclpy.node import Node
 import roboticstoolbox as rtb
 from fun4.srv import ModeSelector
 from sensor_msgs.msg import JointState
-from geometry_msgs.msg import PoseStamped, TransformStamped
 from tf2_ros import TransformListener, Buffer
+from geometry_msgs.msg import PoseStamped, Twist
 
 robot = rtb.DHRobot(
         [   
@@ -29,9 +28,6 @@ class PoseAnalyzerNode(Node):
         
         self.rand = [0.0,0.0,0.0]
         self.q_initial = [0.0, 0.0, 1.4]
-        # self.target_position = np.array([0.0, 0.0, 0.0])
-        # self.name = ["joint_1", "joint_2", "joint_3"]
-        # self.name = ["link_1", "link_2", "link_3"]
         self.q_velocities = JointState() 
         self.q_velocities.velocity = [0.0,0.0,0.0]
         self.q_position = JointState()
@@ -39,6 +35,9 @@ class PoseAnalyzerNode(Node):
         self.q_position.name = ["joint_1", "joint_2", "joint_3"]
         self.service = False
         self.mode = 0
+        self.Kp = 1.2
+        self.initiate = False
+        self.linear_velocity = [0.0,0.0,0.0]
         
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
@@ -48,7 +47,6 @@ class PoseAnalyzerNode(Node):
         self.orientation = [0.0, 0.0, 0.0]
         
         self.target_position = np.array([0.0, 0.0, 0.0])
-        # self.target_position = np.array([-0.3, 0.2, -0.1]) #debug
         
         #----------------------------Timer----------------------------#
         
@@ -64,6 +62,7 @@ class PoseAnalyzerNode(Node):
         #----------------------------Topic_Subscribers----------------------------#
         
         self.create_subscription(PoseStamped, '/target', self.callback_randomizer, 10)
+        self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, 10)
         
         #----------------------------Service_Servers----------------------------#
         
@@ -73,26 +72,34 @@ class PoseAnalyzerNode(Node):
         
     def timer_callback(self):
         
+        print(f'{self.linear_velocity[0]}')
+
         if self.service:
-            # Compute forward kinematics for current joint angles
-            # current_position = robot.fkine(self.q_initial).t[:3]
-            # current_position = robot.fkine(q).t
             
             self.get_transform()
             
             error = self.target_position - self.position
-            v = 1*error
+            
+            if self.mode == 1 or self.mode == 3:
+                v = self.Kp *error
+            
+            elif self.mode == 2:
+                v = self.linear_velocity
             
             J_full = robot.jacob0(self.q_initial)
             J = J_full[:3, :]
             
-            q_dot = np.linalg.pinv(J).dot(v)
+            lambda_ = 0.01
+            J_pseudo_inv = np.linalg.inv(J.T @ J + lambda_ * np.eye(J.shape[1])) @ J.T
+            q_dot = J_pseudo_inv @ v
+
             self.q_velocities.velocity = [q_dot[0], q_dot[1], q_dot[2]]
-            
             
             self.q_initial = self.q_initial + q_dot * 1/self.frequency
             
             if np.linalg.norm(error) < 1e-3:
+                
+                self.get_logger().info(f"Finish at x: {self.position[0]}, y: {self.position[1]}, z: {self.position[2]}")
                 self.q_velocities.velocity = [0.0, 0.0, 0.0]
                 
                 self.service = False
@@ -101,11 +108,10 @@ class PoseAnalyzerNode(Node):
                     self.target_position = [self.rand[0],self.rand[1],self.rand[2]]
                     self.service = True
                     
-                self.get_logger().info(f"Target pose reached! At x: {self.position[0]}, y: {self.position[1]}, z: {self.position[2]}")
-            
-            # self.get_logger().info(f"vel: {self.q_velocities}")
             self.jointstate(self.q_velocities.velocity)
         
+    def cmd_vel_callback(self, msg: Twist):
+        self.linear_velocity = np.array([msg.linear.x, msg.linear.y, msg.linear.z])
         
     def get_transform(self):
         try:
@@ -115,7 +121,6 @@ class PoseAnalyzerNode(Node):
                 self.target_frame,   
                 now)
             position = transform.transform.translation
-            # orientation = transform.transform.rotation
             
             self.position[0] = position.x
             self.position[1] = position.y
@@ -126,29 +131,18 @@ class PoseAnalyzerNode(Node):
         
     def callback_inverse(self, request:ModeSelector.Request , response:ModeSelector.Response):
         self.service = True
-        # Log the requested position
-        # self.get_logger().info(f"Target position: {request.ipk_target.position.x, request.ipk_target.position.y, request.ipk_target.position.z}")
         
         if (request.mode.data == 1):
-            # Mode 1: Levenberg-Marquardt IK
             self.target_position = [request.ipk_target.position.x,request.ipk_target.position.y,request.ipk_target.position.z]
-            
-        elif (request.mode.data == 2):
-            # Mode 2: Not yet implemented
-            pass
         
         elif (request.mode.data == 3):
-            # Mode 3: Use random position from subscription
             self.target_position = [self.rand[0],self.rand[1],self.rand[2]]
             
         self.mode = request.mode.data   
   
         self.get_logger().error(f"{self.target_position}")
-
-        # # Send response with the computed joint positions
         response.state.data = True
         response.mode.data = request.mode.data
-        # response.joint_position.position = [q[0], q[1], q[2]]
 
         return response
     
@@ -159,8 +153,6 @@ class PoseAnalyzerNode(Node):
         
             self.q_position.position[i] += q[i] * 1/self.frequency
             self.q_position.position[i] %= 2*pi
-            
-            # msg.position.append(q[i])
         self.joint_state_pub.publish(self.q_position)
         
     def callback_randomizer(self, msg):

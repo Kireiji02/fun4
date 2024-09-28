@@ -3,9 +3,8 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Int64
-from fun4.srv import ModeSelector, ValueArray
-from sensor_msgs.msg import JointState
 from example_interfaces.srv import Trigger
+from fun4.srv import ModeSelector, ValueArray
 
 
 class ControllerNode(Node):
@@ -47,7 +46,6 @@ class ControllerNode(Node):
         self.value[0] = request.x.data
         self.value[1] = request.y.data
         self.value[2] = request.z.data
-        self.get_logger().info(f'{self.value}')
         if 0.02**2 > (self.value[0]**2)+(self.value[1]**2)+(self.value[2]**2) > 0.52**2:
             response.confirm.data = True
         else:
@@ -55,9 +53,7 @@ class ControllerNode(Node):
         return response
     
     def callback_mode_init(self, request:ModeSelector.Request , response:ModeSelector.Response):
-        # self.get_logger().info('test') # service debug
         self.mode_call(float(self.value[0]),float(self.value[1]),float(self.value[2]), self.mode)
-        # self.get_logger().info(f'{self.value}')
         return response
     
     def mode_call(self, x, y, z, m):
@@ -76,7 +72,6 @@ class ControllerNode(Node):
         try:
             response = future.result()
             self.get_logger().info(f'Result: {response.state}')
-            self.get_logger().info(f'Result: {response.joint_position}')
         except Exception as e:
             self.get_logger().error(f'Service call failed: {e}')
             
