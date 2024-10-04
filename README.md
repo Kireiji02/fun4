@@ -1,4 +1,4 @@
-# fun4-Robot Control in Cartesian Space
+# FUN4-Robot Control in Cartesian Space
 
 This project demonstrates how to control a robot's end-effector in Cartesian space (x, y, z) using `teleop_twist_keyboard` and inverse kinematics. The robot's joints are controlled indirectly through the Jacobian matrix, which converts Cartesian velocities into joint velocities.
 
@@ -69,7 +69,7 @@ Ensure you have the following installed:
 
 - run the launch file containing controller.py, randomizer.py and pose_analyzer.py
     ```bash
-    ros2 launch fun4 fun.launch.py
+    ros2 launch fun4 fun4_easy.launch.py
     ```
 
 - open new terminal (ctrl + alt + t) and run keyboard_teleop.py
@@ -81,7 +81,6 @@ Ensure you have the following installed:
     ```bash
     ros2 run teleop_twist_keyboard teleop_twist_keyboard 
     ```
-![launch1](images/launch1.png)
     
 ## Features
 
@@ -90,6 +89,7 @@ Ensure you have the following installed:
 
 keyboard_teleop.py - to start navigate to node's terminal and press any number keys
 
+![launch1](images/launch1.png)
 ![launch2](images/launch2.png)
 
 ### Mode1: Inverse Position Kinematics (IPK)
@@ -100,7 +100,7 @@ by pressing '1' key on your keyboard Mode1 will be selected but not yet confirme
 - press tab again and node will display "value ready : [0.0, 0.0, 0.0], press c"
 - press c to confirm mode selection
 
-note: if input value was wrong press "r" key to reset
+note: if input value was wrong finish the request procedure and restart again.
 
 ### Mode2: Teleoperation
 press key '2' in keyboard_teleop node, press 'c' key to confirm selection and navigate to teleop_twist_keyboard node:

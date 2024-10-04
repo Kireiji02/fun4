@@ -137,7 +137,8 @@ class TeleopNode(Node):
             self.mode_init()
             print(f'          Mode Change Applied : [ {self.latest} ]')
         elif key == "\x03" :
-            rclpy.shutdown()        
+            rclpy.shutdown()       
+
         elif key == "\x09" and self.latest == 1 and self.trig == 'neutral':
             print(f'     mode 1 input : x = []')
             self.trig = 'trig_x'

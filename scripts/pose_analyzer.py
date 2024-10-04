@@ -109,7 +109,7 @@ class PoseAnalyzerNode(Node):
                     self.service = True
                     
             self.jointstate(self.q_velocities.velocity)
-        
+
     def cmd_vel_callback(self, msg: Twist):
         self.linear_velocity = np.array([msg.linear.x, msg.linear.y, msg.linear.z])
         
